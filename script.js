@@ -3,8 +3,8 @@ window.scrollTo(0, 0);
 
 const translations = {
   en: {
-    pageTitle: "L'Oréal | Smart Routine & Product Advisor",
-    subtitle: "Smart Routine & Product Advisor",
+    pageTitle: "L'Oréal | Smart Routine Builder",
+    subtitle: "Smart Routine Builder",
     logoAlt: "L'Oréal Logo",
     categoryPlaceholder: "Choose a Category",
     categoryCleansers: "Cleansers",
@@ -50,14 +50,15 @@ const translations = {
     routineRequestDisplay: "Build me a routine with: {products}",
     routinePayloadPrefix:
       "Build me a personalized routine using these products:\n",
-    welcomeMessage:
-      "Hi! Ask me about L’Oréal products or your beauty routine.",
+    welcomeMessage: "Hi! Ask me about L’Oréal products or your beauty routine.",
     footerCopyright: "© 2025 L'Oréal. All rights reserved.",
     privacyPolicy: "Privacy Policy",
     termsOfUse: "Terms of Use",
     contact: "Contact",
-    errorLoadSelectedProducts: "Could not load selected products from local storage:",
-    errorSaveSelectedProducts: "Could not save selected products to local storage:",
+    errorLoadSelectedProducts:
+      "Could not load selected products from local storage:",
+    errorSaveSelectedProducts:
+      "Could not save selected products to local storage:",
     errorLoadProducts: "Could not load products:",
     errorSendMessage: "Could not send message to the beauty advisor:",
   },
@@ -104,12 +105,10 @@ const translations = {
     missingResponseMessage: "لم تتضمن استجابة الخادم رسالة.",
     requestErrorFriendly:
       "عذرًا، تعذر الحصول على رد الآن. يُرجى المحاولة مرة أخرى.",
-    pleaseSelectProducts:
-      "يرجى اختيار منتج واحد أو أكثر قبل إنشاء روتين.",
+    pleaseSelectProducts: "يرجى اختيار منتج واحد أو أكثر قبل إنشاء روتين.",
     routineRequestDisplay: "أنشئ لي روتينًا باستخدام: {products}",
     routinePayloadPrefix: "أنشئ لي روتينًا مخصصًا باستخدام هذه المنتجات:\n",
-    welcomeMessage:
-      "مرحبًا! اسألني عن منتجات L’Oréal أو روتين جمالك.",
+    welcomeMessage: "مرحبًا! اسألني عن منتجات L’Oréal أو روتين جمالك.",
     footerCopyright: "© 2025 L'Oréal. جميع الحقوق محفوظة.",
     privacyPolicy: "سياسة الخصوصية",
     termsOfUse: "شروط الاستخدام",
@@ -177,10 +176,7 @@ function applyLanguage() {
   });
   updateChatInputPlaceholder();
   document.querySelectorAll("[data-i18n-aria-label]").forEach((element) => {
-    element.setAttribute(
-      "aria-label",
-      t(element.dataset.i18nAriaLabel),
-    );
+    element.setAttribute("aria-label", t(element.dataset.i18nAriaLabel));
   });
   document.querySelectorAll("[data-i18n-alt]").forEach((element) => {
     element.alt = t(element.dataset.i18nAlt);
@@ -219,7 +215,7 @@ You help users build personalized beauty routines from products they select, and
 
 You may discuss skincare, haircare, makeup, fragrance, suncare, and grooming. If a user asks about something unrelated to beauty or L’Oréal, politely decline and redirect them to beauty topics.
 
-When given a list of selected products, build a clear routine that explains the order to use them in, when to use each one (morning, evening, or both), and why that order matters. Remember details the user shares, such as their skin type or concerns, and use them to personalize your advice. Keep responses concise and friendly.`,
+When given a list of selected products, build a clear routine focused on those specific products: explain the order to use them in, when to use each one (morning, evening, or both), and why that order matters. Present routines as numbered steps with short headings. Do not use markdown tables in responses. Do not add steps for products the user has not selected, or general sections about frequency or technique unless asked. When citing sources, prefer L’Oréal-owned sources such as loreal.com, lorealparisusa.com, and hair.com. Remember details the user shares, such as their skin type or concerns, and use them to personalize your advice. Keep responses concise and friendly.`,
   },
 ];
 
@@ -287,7 +283,7 @@ function displayProducts(products) {
         </button>
       </div>
     </div>
-  `
+  `,
     )
     .join("");
 
@@ -302,16 +298,18 @@ function displayProducts(products) {
     }
   });
 
-  productsContainer.querySelectorAll(".product-details-button").forEach((button) => {
-    button.addEventListener("click", (event) => {
-      event.stopPropagation();
-      const productId = Number(button.dataset.productId);
-      const product = allProducts.find((item) => item.id === productId);
-      if (product) {
-        showProductDetails(product, button);
-      }
+  productsContainer
+    .querySelectorAll(".product-details-button")
+    .forEach((button) => {
+      button.addEventListener("click", (event) => {
+        event.stopPropagation();
+        const productId = Number(button.dataset.productId);
+        const product = allProducts.find((item) => item.id === productId);
+        if (product) {
+          showProductDetails(product, button);
+        }
+      });
     });
-  });
 
   updateDisplayedProductSelections();
 }
@@ -368,7 +366,8 @@ function showProductDetails(product, triggerButton) {
   closeButton.classList.add("product-modal-close");
   closeButton.type = "button";
   closeButton.setAttribute("aria-label", t("modalCloseAriaLabel"));
-  closeButton.innerHTML = '<i class="fa-solid fa-xmark" aria-hidden="true"></i>';
+  closeButton.innerHTML =
+    '<i class="fa-solid fa-xmark" aria-hidden="true"></i>';
 
   const image = document.createElement("img");
   image.classList.add("product-modal-image");
@@ -466,9 +465,11 @@ function renderSelectedProducts() {
     )
     .join("");
 
-  selectedProductsList.querySelectorAll(".selected-product-image").forEach((image) => {
-    addImageFallback(image, image.alt);
-  });
+  selectedProductsList
+    .querySelectorAll(".selected-product-image")
+    .forEach((image) => {
+      addImageFallback(image, image.alt);
+    });
 }
 
 function saveSelectedIds() {
@@ -516,10 +517,21 @@ function formatAssistantMessage(content) {
     /\*\*(.*?)\*\*/g,
     "<strong>$1</strong>",
   );
+  const linkedContent = boldContent.replace(
+    /\[([^\]]+)\]\(((?:[^()]|\([^()]*\))*)\)/g,
+    (match, text, url) => {
+      if (!/^https?:\/\//i.test(url)) {
+        return text;
+      }
+
+      const safeUrl = url.replace(/"/g, "&quot;");
+      return `<a class="msg-inline-link" href="${safeUrl}" target="_blank" rel="noopener noreferrer">${text}</a>`;
+    },
+  );
   const blocks = [];
   let listType = "";
   let listItems = [];
-  const lines = boldContent.split("\n");
+  const lines = linkedContent.split("\n");
 
   function closeList() {
     if (listType) {
@@ -547,7 +559,7 @@ function formatAssistantMessage(content) {
     }
 
     const bulletItem = line.match(/^[-*] (.*)$/);
-    const numberedItem = line.match(/^\d+\. (.*)$/);
+    const numberedItem = line.match(/^(\d+)\. (.*)$/);
     const nextListType = bulletItem ? "ul" : numberedItem ? "ol" : "";
 
     if (nextListType) {
@@ -555,8 +567,13 @@ function formatAssistantMessage(content) {
         closeList();
         listType = nextListType;
       }
-      const itemContent = bulletItem ? bulletItem[1] : numberedItem[1];
-      listItems.push(`<li>${itemContent}</li>`);
+      if (bulletItem) {
+        listItems.push(`<li>${bulletItem[1]}</li>`);
+      } else {
+        listItems.push(
+          `<li value="${numberedItem[1]}">${numberedItem[2]}</li>`,
+        );
+      }
       continue;
     }
 
@@ -614,10 +631,7 @@ function addSources(messageElement, annotations) {
     }
 
     const citation = annotation.url_citation;
-    if (
-      typeof citation.url !== "string" ||
-      seenUrls.has(citation.url)
-    ) {
+    if (typeof citation.url !== "string" || seenUrls.has(citation.url)) {
       return false;
     }
 
@@ -659,7 +673,11 @@ async function sendToWorker(displayText, payloadText = displayText) {
     const response = await fetch(WORKER_URL, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ model: "gpt-4o-search-preview", messages: messages }),
+      body: JSON.stringify({
+        model: "gpt-5-search-api",
+        messages: messages,
+        web_search_options: {},
+      }),
     });
 
     if (!response.ok) {
