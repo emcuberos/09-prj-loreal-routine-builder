@@ -63,8 +63,8 @@ const translations = {
     errorSendMessage: "Could not send message to the beauty advisor:",
   },
   ar: {
-    pageTitle: "L'Oréal | مستشار الروتين والمنتجات الذكي",
-    subtitle: "مستشار الروتين والمنتجات الذكي",
+    pageTitle: "L'Oréal | منشئ الروتين الذكي",
+    subtitle: "منشئ الروتين الذكي",
     logoAlt: "شعار L'Oréal",
     categoryPlaceholder: "اختر فئة",
     categoryCleansers: "منظفات البشرة",
@@ -215,7 +215,7 @@ You help users build personalized beauty routines from products they select, and
 
 You may discuss skincare, haircare, makeup, fragrance, suncare, and grooming. If a user asks about something unrelated to beauty or L’Oréal, politely decline and redirect them to beauty topics.
 
-When given a list of selected products, build a clear routine focused on those specific products: explain the order to use them in, when to use each one (morning, evening, or both), and why that order matters. Present routines as numbered steps with short headings. Do not use markdown tables in responses. Do not add steps for products the user has not selected, or general sections about frequency or technique unless asked. When citing sources, prefer L’Oréal-owned sources such as loreal.com, lorealparisusa.com, and hair.com. Remember details the user shares, such as their skin type or concerns, and use them to personalize your advice. Keep responses concise and friendly.`,
+When given a list of selected products, build a clear routine focused on those specific products: explain the order to use them in, when to use each one (morning, evening, or both), and why that order matters. Present routines as numbered steps with short headings. Do not add steps for products the user has not selected, or general sections about frequency or technique unless asked. When citing sources, prefer L’Oréal-owned sources such as loreal.com, lorealparisusa.com, and hair.com. Remember details the user shares, such as their skin type or concerns, and use them to personalize your advice. Keep responses concise and friendly.`,
   },
 ];
 
@@ -543,6 +543,48 @@ function formatAssistantMessage(content) {
 
   for (let index = 0; index < lines.length; index++) {
     const line = lines[index];
+
+    const isPipeRow = (candidate) =>
+      /^\|.*\|$/.test(candidate.trim());
+    const tableSeparator = lines[index + 1];
+    const isTableSeparator =
+      isPipeRow(line) &&
+      isPipeRow(tableSeparator || "") &&
+      tableSeparator
+        .trim()
+        .split("|")
+        .slice(1, -1)
+        .every((cell) => /^:?-+:?$/.test(cell.trim()));
+
+    if (isTableSeparator) {
+      closeList();
+      const getCells = (row) =>
+        row.trim().split("|").slice(1, -1).map((cell) => cell.trim());
+      const headerCells = getCells(line);
+      const bodyRows = [];
+      index += 2;
+
+      while (index < lines.length && isPipeRow(lines[index])) {
+        bodyRows.push(getCells(lines[index]));
+        index++;
+      }
+      index--;
+
+      const header = headerCells.map((cell) => `<th>${cell}</th>`).join("");
+      const rows = bodyRows
+        .map((cells) => {
+          while (cells.length < headerCells.length) {
+            cells.push("");
+          }
+          return `<tr>${cells.map((cell) => `<td>${cell}</td>`).join("")}</tr>`;
+        })
+        .join("");
+
+      blocks.push(
+        `<div class="msg-table-container"><table class="msg-table"><thead><tr>${header}</tr></thead><tbody>${rows}</tbody></table></div>`,
+      );
+      continue;
+    }
 
     if (!line.trim() && listType) {
       const nextLine = lines

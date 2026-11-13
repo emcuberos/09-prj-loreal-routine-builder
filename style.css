@@ -164,6 +164,33 @@ h3 {
 .msg ul, .msg ol { margin: 0.5em 0; padding-inline-start: 1.4em; }
 .msg li + li { margin-top: 0.25em; }
 
+.msg-table-container {
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+.msg-table {
+  width: max-content;
+  border-collapse: collapse;
+}
+
+.msg-table th,
+.msg-table td {
+  border: 1px solid #705727;
+  padding: 6px 10px;
+}
+
+.msg-table th {
+  color: #e3a535;
+  font-family: var(--font-display);
+  text-align: left;
+}
+
+.msg-table td {
+  color: #f5f3ef;
+  font-family: var(--font-body);
+}
+
 .msg-sources {
   display: flex;
   flex-wrap: wrap;
