@@ -135,6 +135,26 @@ h3 {
   background: rgba(17, 17, 17, 0.94);
   color: #f5f3ef;
   margin-bottom: 20px;
+  scrollbar-color: #705727 rgba(17, 17, 17, 0.94);
+  scrollbar-width: thin;
+}
+
+.chat-window::-webkit-scrollbar {
+  width: 10px;
+}
+
+.chat-window::-webkit-scrollbar-track {
+  background: rgba(17, 17, 17, 0.94);
+}
+
+.chat-window::-webkit-scrollbar-thumb {
+  border: 2px solid rgba(17, 17, 17, 0.94);
+  border-radius: 8px;
+  background: #705727;
+}
+
+.chat-window::-webkit-scrollbar-thumb:hover {
+  background: #e3a535;
 }
 
 /* placeholder message */
